@@ -1,0 +1,15 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+ifeq (${DEB_BUILD_ARCH},amd64)
+  native_dir=Linux-amd64-64
+endif
+ifeq (${DEB_BUILD_ARCH},i386)
+  native_dir=Linux-i386-32
+endif
+
+override_dh_auto_build:
+	env HADOOP_ARCH=${native_dir} M2_HOME=/tmp
+	mvn install -f hadoop-maven-plugins/pom.xml
+	mvn compile -Pnative -e
